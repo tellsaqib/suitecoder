@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="mainApp">
+    <head>
+        <meta charset="utf-8">
+        <title>Suite Coder</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="Najmus Saqib">
+
+        <!-- Le styles -->
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/css/app.css" rel="stylesheet">
+        <style>
+            body {padding-bottom: 30px;}
+
+            .top-buffer{margin-top:15px;}
+            .navbar-link:hover,.navbar-link:focus{text-decoration: underline !important;}
+            .selected{font-weight:bold;}
+            .history-list{max-height: 100px !important; overflow-y: auto; overflow-x: hidden;}
+            .folder-list{list-style: none; padding-left: 0px; overflow: hidden;}
+            .folder-list li{width: 100% !important; margin-bottom: 15px; clear: both;}
+            .tab-close{ margin-left: 5px; margin-right: -10px;}
+            .tab-close:hover{text-decoration: underline; font-weight:bold;}
+            textarea.editor{width:100%; min-height: 400px;}
+            .tab-pane{padding-top:10px;}
+        </style>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- Fav and touch icons -->
+        <link rel="shortcut icon" href="/static/img/pi.png">
+    </head>
+
+    <body ng-controller="mainCtrl">
+        <!-- Fixed navbar -->
+        <div class="navbar navbar-default" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">Suite Coder</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="http://dreamxtream.wordpress.com/" target="_blank">
+                                <i class="glyphicon glyphicon-bookmark"></i> Blog</a></li>
+                        <li><a href="http://dreamxtream.wordpress.com/suite-coder/#contact-form-437" target="_blank">
+                                <i class="glyphicon glyphicon-new-window"></i> Contact me</a></li>
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" href="#">
+                                <span class="glyphicon glyphicon-th-list"></span> Netsuite Tools
+                            </a>
+                            <ul role="menu" class="dropdown-menu" aria-labelledby="dLabel">
+                                <li><a href="http://suitecoder.appspot.com/static/api.html" target="_blank">
+                                        SuiteScript API Explorer</a></li>
+                                <li><a href="https://suitecoder-old.appspot.com/" target="_blank">
+                                        Older version of SuiteCoder</a></li>
+                                <li><a href="http://tellsaqib.github.io/NSPHP-Doc/" target="_blank">Netsuite PHP Toolkit Documentation</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" href="#">
+                                <span class="glyphicon glyphicon-cog"></span> Settings
+                            </a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" style="padding: 5px 10px 0;">
+                                <li><div class="checkbox"><label>
+                                            <input type="checkbox" id="chk-rich-code-editor" ng-model="richCodeEditor" ng-change="UpdateCodeEditor()"/> Rich code editor</label></div></li>
+                                <li>
+                                    <div class="form-group">
+                                        <label class="control-label">File Diff View</label>
+                                        <select class="form-control" ng-model="diffMode">
+                                            <option value="0">Side by Side</option>
+                                            <option value="1">Inline</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <!--
+                                <li>
+                                    <div class="form-group">
+                                        <label class="control-label">File Order</label>
+                                        <select class="form-control" ng-model="fileOrder">
+                                            <option value="name">Name</option>
+                                            <option value="date">Date</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                -->
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right ">
+                        <li><a href="#"><i>Coding for the cloud in the cloud</i></a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
+
+        <div class="container">
+            <ul class="nav nav-tabs" id="tabs">
+                <li class="active"><a href="#local" data-toggle="tab"><b>My Files</b></a></li>
+                <li><a href="#account" data-toggle="tab"><b>Account Files</b></a></li>
+                <li ng-repeat="(id, file) in openedFiles" class="animate-repeat">
+                    <a href="#{{id}}" data-toggle="tab">{{file.name}} <button class="tab-close btn-link" ng-click="closeFile(id)">X</button></a>
+                </li>
+            </ul>
+            <div id="tab-content" class="tab-content">
+                <div class="tab-pane active" id="local" ng-controller="localCtrl">
+                    <div class="row">
+                        <div class="col-md-3 well" style="min-height:300px;">
+                            <div class="row">
+                                <a class="btn btn-primary" ng-click="formView = 1" ng-show="formView == 0">
+                                    <span class="glyphicon glyphicon-plus"></span>  Add Folder</a>
+                                <a class="btn btn-primary" ng-click="formView = 2" ng-show="formView == 0">
+                                    <span class="glyphicon glyphicon-plus"></span>  Add File</a>
+                            </div>
+                            <br/>
+                            <form ng-submit="addFolder()" ng-show="formView == 1" class="animate-show">
+                                <input type="text" ng-model="newFolderName" class="form-control" placeholder="Folder Name" required>
+                                <br/>
+                                <input type="submit" class="btn btn-primary" value="Add Folder" ng-disabled="inProgress"/>
+                                &nbsp;
+                                <a ng-click="formView = 0" class="btn btn-link">Cancel</a>
+                            </form>
+                            <form ng-submit="addFile()" ng-show="formView == 2" class="animate-show">
+                                <input type="text" ng-model="newFileName" class="form-control" placeholder="File Name (eg. sample.js)" required>
+                                <br/>
+                                <select class="form-control" ng-model="newFileFolder" name="file-folder"
+                                        ng-options="folder.key as folder.name for folder in folders" required>
+                                    <option value="">-- Select a folder --</option>
+                                </select>
+                                <br/>
+                                <input type="submit" class="btn btn-primary" value="Add File" ng-disabled="inProgress"/>
+                                &nbsp;
+                                <a ng-click="formView = 0" class="btn btn-link">Cancel</a>
+                            </form>
+                            <hr/>
+                            <ul class="folder-list">
+                                <li ng-repeat="folder in folders" class="animate-repeat">
+                                    <a ng-click="getFiles(folder, $event)" class="local-folder-label" href="javascript:">
+                                        <span class="glyphicon glyphicon-folder-open"></span> &nbsp;{{folder.name}}</a>
+                                    <div class="pull-right">
+                                        <button class="btn btn-info btn-sm" ng-click="renameFolder(folder)" title="Rename folder">
+                                            <span class="glyphicon glyphicon-edit"></span></button>
+                                        <button class="btn btn-primary btn-sm" ng-click="deleteFolder(folder)" title="Delete folder">
+                                            <span class="glyphicon glyphicon-trash" ></span></button>
+                                    </div>
+                                </li> 
+                            </ul>
+                            <h3 ng-hide="folders.length">Please add a folder to add/edit your personal files.</h3>
+                        </div>
+                        <div class="col-md-8" id="file-list">
+                            <div class="alert alert-info" ng-show="msg.length">{{msg}}</div>
+                            <table class="table table-striped" id="file-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Last Modified At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="file in files | orderBy:fileOrder" class="animate-repeat">
+                                        <td><a ng-click="openFile(file)" class="btn btn-link">{{file.name}}</a></td>
+                                        <td>{{file.date| toDateView}}</td>
+                                        <td><a class="btn btn-link" ng-click="deleteFile(file);">Delete</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="account" ng-controller="accountCtrl">
+                    <div class="alert alert-info animate-show" ng-show="loginMsg.length" >{{loginMsg}}</div>
+
+                    <form name="loginForm" class="col-md-6" ng-show="loginStatus == 0" action="/account">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" ng-model="creds.email" placeholder="Enter email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" class="form-control" placeholder="Enter your Netsuite Password" ng-model="creds.password" required>
+                            <p class="help-block"><span class="glyphicon glyphicon-lock"></span> Your password will not be saved</p>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="creds.is_sandbox" >Sandbox Account
+                            </label>
+                        </div>
+                        <input type="submit" ng-disabled="inProgress" value="Login" ng-click="getRoles()" class="btn btn-primary" />
+                    </form>
+
+                    <form id="role-select-form" method="post" name="roleSelectForm" class="col-md-6" ng-show="loginStatus == 1" >
+                        <div class="form-group">
+                            <label>Select Role</label>
+                            <select id="cred-role" class="form-control" ng-model="role">
+                                <option ng-repeat="r in roles" value={{$index}}>{{r.account.name}}: {{r.role.name}}</option>
+                            </select>
+                        </div>
+                        <input type="submit" value="Proceed" ng-click="getFolders()" class="btn btn-primary" ng-disabled="inProgress" />
+                    </form>
+                    <div class="row" ng-show="loginStatus == 2">
+                        <div class="col-md-3 col-sm-3 well">
+                            <a class="btn btn-primary" ng-click="formView = 1" ng-hide="formView">
+                                <span class="glyphicon glyphicon-plus"></span>  Add File</a><br/>
+                            <form ng-submit="addFile()" ng-show="formView" class="animate-show">
+                                <input type="text" ng-model="newFileName" class="form-control" placeholder="File Name (eg. sample.js)" required>
+                                <br/>
+                                <select class="form-control" ng-model="newFileFolder" name="file-folder" ng-bind-html="folderSelectOptions" required>
+                                </select>
+                                <br/>
+                                <input type="submit" class="btn btn-primary" value="Add File" ng-disabled="inProgress"/>
+                                &nbsp;
+                                <a ng-click="formView = 0" class="btn btn-link">Cancel</a>
+                            </form>
+                            <hr/>
+                            <div
+                                data-angular-treeview="true"
+                                data-tree-model="folders"
+                                data-node-id="id"
+                                data-node-label="name"
+                                data-node-children="subFolders"
+                                data-tree-id="tree">
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-9 col-sm-9" id="file-list" >
+                            <div class="alert alert-info" ng-show="msg.length">{{msg}}</div>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Size</th>
+                                        <th>Last Modified At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="file in accountFiles | orderBy:fileOrder" class="animate-repeat">
+                                        <td><a href="#" ng-click="openFile(file)">{{file.name}}</a></td>
+                                        <td>{{file.type}}</td>
+                                        <td>{{file.size}}</td>
+                                        <td>{{file.date}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="{{tabid}}" ng-repeat="(tabid, file) in openedFiles" ng-keydown="keyHandler($event, file)" ng-keypress="keyHandler($event, file)">
+                    <div class="row">
+                        <ul class="breadcrumb pull-left">
+                            <li ng-repeat="crumb in file.breadCrumbs">{{crumb}}</li>
+                            <li class="active">{{file.name}}</li>
+                        </ul>
+                        <div class="pull-right" ng-hide="file.diffMode">
+                            <label><input type="checkbox" ng-model="file.saveHistory" />Save Revision History</label>
+                            <a class="btn btn-primary" ng-click="saveFile(file, tabid);" title="Save file to server (Ctrl+S)"><span class="glyphicon glyphicon-cloud-upload"></span> Save File</a>
+                            <a class="btn btn-info" ng-click="listHistory(file, tabid);" ><span class="glyphicon glyphicon-time"></span> File History</a>
+                        </div>
+                        <div class="pull-right" ng-show="file.diffMode">
+                            <a class="btn btn-info" ng-click="viewEditor(file);" ><span class="glyphicon glyphicon-edit"></span> Back to Edit Mode</a>
+                        </div>
+                    </div>
+                    <div class="alert alert-info" ng-show="file.msg.length">{{file.msg}}</div>
+                    <div ng-hide="file.diffMode">
+                        <textarea id="{{tabid}}-editor" data-tabid="{{tabid}}" ng-model="file.content" class="editor" autofocus ng-show="file.contentLoaded"></textarea>
+                    </div>
+                    <div ng-show="file.diffMode">
+                        <div class="history-list" >
+                            <div class="row animate-repeat" ng-repeat="revision in file.historyList">
+                                <button class="pull-left col-md-2 btn btn-link btn-sm" ng-click="loadDiff(revision, tabid, $event)" >
+                                    {{revision.time| toDateView}}</button>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-{{revision.saving === true?'floppy-open':'tag'}}"></span></span>
+                                    <input type="text" class="form-control input-sm" ng-model="revision.tag" ng-blur="updateTag(revision)" placeholder="Tag this revision"/>
+                                </div>
+                            </div>
+                        </div>
+                        <hr style="clear: both;"/>
+                        <div ng-bind-html="file.diffWidgetHTML"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Le javascript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="/static/js/jquery.js"></script>
+        <script src="/static/js/angular.min.js"></script>
+        <script src="/static/js/angular-animate.min.js"></script>
+        <script src="/static/js/codemirror.js"></script>
+        <script src="/static/js/deferred.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/app.js"></script>
+
+        <script>
+                                    (function(i, s, o, g, r, a, m) {
+                                    i['GoogleAnalyticsObject'] = r;
+                                            i[r] = i[r] || function() {
+                                    (i[r].q = i[r].q || []).push(arguments)
+                                    }, i[r].l = 1 * new Date();
+                                            a = s.createElement(o),
+                                            m = s.getElementsByTagName(o)[0];
+                                            a.async = 1;
+                                            a.src = g;
+                                            m.parentNode.insertBefore(a, m)
+                                    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+                                    ga('create', 'UA-40763801-4', 'suitecoder.appspot.com');
+                                    ga('send', 'pageview');
+
+        </script>
+    </body>
+</html>

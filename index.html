@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Suite Coder</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="An online code editor to manage you files in Netsuite Account (specially Suite Script files)">
+        <meta name="author" content="Najmus Saqib">
+
+        <!-- Le styles -->
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {padding-bottom: 30px; padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */}
+            .carousel-caption{color:#000000 !important; bottom: 0px !important;}
+            .carousel-inner > .item > img{width: 1100px !important; height: 550px !important;}
+            #share-widgets > div,#share-widgets > iframe {margin-bottom: 5px;}
+        </style>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- Fav and touch icons -->
+        <link rel="shortcut icon" href="/static/img/pi.png">
+    </head>
+
+    <body ng-controller="mainCtrl">
+        <!-- Fixed navbar -->
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">Suite Coder</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="http://dreamxtream.wordpress.com/" target="_blank">
+                                <i class="glyphicon glyphicon-bookmark"></i> Blog</a></li>
+                        <li><a href="http://dreamxtream.wordpress.com/suite-coder/#contact-form-437" target="_blank">
+                                <i class="glyphicon glyphicon-new-window"></i> Contact me</a></li>
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" href="#">
+                                <span class="glyphicon glyphicon-th-list"></span> Netsuite Tools
+                            </a>
+                            <ul role="menu" class="dropdown-menu" aria-labelledby="dLabel">
+                                <li><a href="http://suitecoder.appspot.com/static/api.html" target="_blank">
+                                        SuiteScript API Explorer</a></li>
+                                <li><a href="https://suitecoder-old.appspot.com/" target="_blank">
+                                        Older version of SuiteCoder</a></li>
+                                <li><a href="http://tellsaqib.github.io/NSPHP-Doc/" target="_blank">Netsuite PHP Toolkit Documentation</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right ">
+                        <li><a href="#">Coding for the cloud in the cloud</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="well well-lg">
+                <div class="col-md-6">
+                    <h1 class="text-info">SuiteCoder</h1>
+                    <h3>An online Code Editor especially designed to edit your SuiteScript files so that you can customize NetSuite anywhere everywhere.</h3>
+                    
+                    <br style="clear: both;"/>
+                    <a class="btn btn-lg btn-info btn-block" href="/app">
+                        <h3>Let's Start &nbsp;&nbsp; <span class="glyphicon glyphicon-circle-arrow-right"></span></h3></a>
+                </div>
+                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-4">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Built using</div>
+                        <div class="panel-body">
+                            <ul>
+                                <li><a href="http://www.netsuite.com/portal/platform/developer/suitetalk.shtml" target="_blank">Suite Talk</a></li>
+                                <li><a href="https://cloud.google.com/products/app-engine/" target="_blank">Google App Engine</a></li>
+                                <li><a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a></li>
+                                <li><a href="http://angularjs.org/" target="_blank">Angular JS</a></li>
+                                <li><a href="http://codemirror.net/" target="_blank" >Code Mirror</a></li>
+                                <li><a href="http://bootswatch.com/united/" target="_blank">Bootswatch Theme</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br/>
+                    <div id="share-widgets">
+                        <!-- FB -->
+                        <div id="fb-root"></div>
+                        <script>(function(d, s, id) {
+                                        var js, fjs = d.getElementsByTagName(s)[0];
+                                        if (d.getElementById(id))
+                                            return;
+                                        js = d.createElement(s);
+                                        js.id = id;
+                                        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=495211297173616";
+                                        fjs.parentNode.insertBefore(js, fjs);
+                                    }(document, 'script', 'facebook-jssdk'));</script>
+                        <div class="fb-like" data-href="https://suitecoder.appspot.com" 
+                             data-layout="standard" data-action="like" data-width="250" 
+                             data-colorscheme="light" data-share="false"
+                             data-show-faces="false" data-share="true"></div>
+
+                        <!-- Google+ -->
+                        <div class="g-plusone" data-annotation="inline" data-width="160"  data-href="https://suitecoder.appspot.com" ></div>
+                        <script type="text/javascript">
+                                    (function() {
+                                        var po = document.createElement('script');
+                                        po.type = 'text/javascript';
+                                        po.async = true;
+                                        po.src = 'https://apis.google.com/js/platform.js';
+                                        var s = document.getElementsByTagName('script')[0];
+                                        s.parentNode.insertBefore(po, s);
+                                    })();
+                        </script>
+                        <!-- Twitter -->
+                        <a href="https://twitter.com/share" class="twitter-share-button" 
+                           data-lang="en" data-text="SuiteCoder - Customize @NetSuite anywhere everywhere"
+                           data-url="https://suitecoder.appspot.com">Tweet</a>
+                        <script>!function(d, s, id) {
+                                        var js, fjs = d.getElementsByTagName(s)[0];
+                                        if (!d.getElementById(id)) {
+                                            js = d.createElement(s);
+                                            js.id = id;
+                                            js.src = "https://platform.twitter.com/widgets.js";
+                                            fjs.parentNode.insertBefore(js, fjs);
+                                        }
+                                    }(document, "script", "twitter-wjs");</script>    
+                    </div>
+                </div>
+                <br style="clear: both;"/>
+            </div>
+
+            <h1 class="text-center">How it works?</h1>
+
+            <h3>My Files</h3>
+            <p>Folders and files under "My Files" tab are associated to your Google Account. Create as many folder and files you need.</p>
+            <img src="/static/img/personal.png" alt="Manage your personal files." class="img-thumbnail img-responsive">
+
+            <h3>Rich Code Editor</h3>
+            <p>Edit your files using rich code editor with out of the box support for Suitescript Files. IntelliSense is also available (Press <b>Ctrl-Space</b> anytime to get code hints). You can disable the rich code editor from Setting menu on Navigation menu.</p>
+            <p>Keep saving your files by pressing the "Save File" button just above the editor. You can also save the file by pressing <b>Ctrl-S</b> keys from the editor.</p>
+            <img src="/static/img/editor.png" alt="Rich code Editor" class="img-thumbnail img-responsive">
+
+            <h3>Account Files</h3>
+            <p>Connect to your NetSuite account any time to edit and save files directly to your account. Click "Account Files" tab. Enter your NetSuite credentials. After logging in All your folders will be displayed. Click on any folder to get the list of files.</p>
+            <p>SuiteCoder uses Netsuite Webservices. Please make sure that your role has sufficient webservice permissions. Don't forget to tick the Sandbox checkbox if you are using a sandbox account.</p>
+
+            <img src="/static/img/account.png" alt="Manage your Netsuite account files." class="img-thumbnail img-responsive">
+
+            <h3>File Revisions</h3>
+            <p>Each time you save the file a revision is saved. Click on "File History" button (Just above the code editor) to view all the revisions. Click on any date to compare that revision with current version in your editor</p>
+            <img src="/static/img/history.png" alt="File History" class="img-thumbnail img-responsive">
+
+        </div>
+
+        <!-- Le javascript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="/static/js/jquery.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script>
+                                    (function(i, s, o, g, r, a, m) {
+                                        i['GoogleAnalyticsObject'] = r;
+                                        i[r] = i[r] || function() {
+                                            (i[r].q = i[r].q || []).push(arguments)
+                                        }, i[r].l = 1 * new Date();
+                                        a = s.createElement(o),
+                                                m = s.getElementsByTagName(o)[0];
+                                        a.async = 1;
+                                        a.src = g;
+                                        m.parentNode.insertBefore(a, m)
+                                    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+                                    ga('create', 'UA-40763801-4', 'suitecoder.appspot.com');
+                                    ga('send', 'pageview');
+
+        </script>
+    </body>
+</html>
