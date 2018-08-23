@@ -1,5 +1,5 @@
 # SuiteCoder (Coding for the cloud in the cloud)
-An online Code Editor especially designed to edit your SuiteScript files so that you can customize NetSuite anywhere everywhere. Suite Coder is a Python Web App that runs on Google App Engine.
+An online Code Editor especially designed to edit your SuiteScript files so that you can customize NetSuite anywhere everywhere. Suite Coder is a Python based Web App that runs on Google App Engine.
 
 
 ### Deployment Instructions
